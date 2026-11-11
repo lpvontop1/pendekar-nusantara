@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Pendekar Nusantara</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" width="480" height="270"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div id="hearts"></div>
+      <div id="stamina"><div id="stamina-fill"></div></div>
+    </div>
+    <div id="hud-mid">
+      <div id="hud-level">PETAK 1</div>
+      <div id="boss-bar" class="hidden"><div id="boss-name">RANGDA</div><div id="boss-hp"><div id="boss-hp-fill"></div></div></div>
+    </div>
+    <div id="hud-right">
+      <div id="coin-box"><img src="assets/img/coin.png" alt="koin"><span id="coin-count">0</span></div>
+      <button id="btn-pause" class="icon-btn" aria-label="Jeda"><svg viewBox="0 0 24 24"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
+    </div>
+    <div id="compass" class="hidden"><svg viewBox="0 0 24 24"><path d="M12 2l7 18-7-5-7 5z"/></svg></div>
+  </div>
+
+  <!-- Kontrol sentuh -->
+  <div id="controls" class="hidden">
+    <div class="pad pad-left">
+      <button id="btn-left" class="ctrl" aria-label="Kiri"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8z"/></svg></button>
+      <button id="btn-right" class="ctrl" aria-label="Kanan"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8z"/></svg></button>
+    </div>
+    <div class="pad pad-right">
+      <button id="btn-dash" class="ctrl ctrl-small" aria-label="Dash"><svg viewBox="0 0 24 24"><path d="M3 12h10l-4-4 2-2 8 6-8 6-2-2 4-4H3z"/></svg></button>
+      <button id="btn-jump" class="ctrl ctrl-big" aria-label="Lompat"><svg viewBox="0 0 24 24"><path d="M12 3l8 8-2.5 2.5L14 10v11h-4V10l-3.5 3.5L4 11z"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Tombol toko mengapung dekat warung -->
+  <button id="shop-fab" class="hidden"><img src="assets/img/warung.png" alt="warung"><span>TOKO</span></button>
+
+  <!-- BOOT -->
+  <div class="screen" id="screen-boot">
+    <div class="panel boot-panel">
+      <img class="boot-icon" src="assets/img/coin.png" alt="">
+      <div class="boot-bar"><div id="boot-fill"></div></div>
+      <div class="boot-text">Menyalakan obor...</div>
+    </div>
+  </div>
+
+  <!-- MENU UTAMA -->
+  <div class="screen hidden" id="screen-menu">
+    <div class="menu-frame">
+      <div class="menu-head">
+        <h1 class="title">PENDEKAR<span class="title-sub">NUSANTARA</span></h1>
+        <p class="tagline">Jelajahi kepulauan, halau makhluk halus, temukan gerbang</p>
+      </div>
+      <div id="menu-hero-wrap"><img id="menu-hero" src="assets/img/player.png" alt="pendekar"></div>
+      <nav class="menu-nav">
+        <button id="btn-continue" class="btn btn-primary">MULAI</button>
+        <button id="btn-levels" class="btn">PILIH PETAK</button>
+        <button id="btn-shop-menu" class="btn">WARUNG</button>
+        <button id="btn-settings" class="btn">PENGATURAN</button>
+      </nav>
+      <div class="menu-foot">
+        <span id="menu-coins"><img src="assets/img/coin.png" alt=""> <b>0</b></span>
+        <span class="foot-sep"></span>
+        <span>v1.0 &middot; dibuat untuk Android</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILIH LEVEL -->
+  <div class="screen hidden" id="screen-levels">
+    <div class="panel level-panel">
+      <header class="panel-head">
+        <button class="icon-btn back-btn" id="btn-levels-back" aria-label="Kembali"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8z"/></svg></button>
+        <h2>PILIH PETAK</h2>
+        <div class="head-spacer"></div>
+      </header>
+      <div id="level-grid"></div>
+      <footer class="level-foot">
+        <button id="btn-page-prev" class="icon-btn" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8z"/></svg></button>
+        <span id="page-label">PETAK 1-20</span>
+        <button id="btn-page-next" class="icon-btn" aria-label="Berikutnya"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8z"/></svg></button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- PENGATURAN -->
+  <div class="screen hidden" id="screen-settings">
+    <div class="panel settings-panel">
+      <header class="panel-head">
+        <button class="icon-btn back-btn" id="btn-settings-back" aria-label="Kembali"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8z"/></svg></button>
+        <h2>PENGATURAN</h2>
+        <div class="head-spacer"></div>
+      </header>
+      <div class="settings-list">
+        <div class="setting-row"><span>Musik Gamelan</span><button class="toggle" id="tg-music" aria-label="Musik"><i></i></button></div>
+        <div class="setting-row"><span>Efek Suara</span><button class="toggle" id="tg-sfx" aria-label="SFX"><i></i></button></div>
+        <div class="setting-row"><span>Getaran</span><button class="toggle" id="tg-vibe" aria-label="Getar"><i></i></button></div>
+        <div class="setting-row danger"><span>Reset Progres</span><button class="btn btn-danger btn-small" id="btn-reset">RESET</button></div>
+      </div>
+      <div class="settings-about">
+        <p>Pendekar Nusantara &mdash; platformer prosedural bertema kepulauan Nusantara.</p>
+        <p>Kumpulkan koin, tukar di warung, waspadai lava &amp; ranjau, dan taklukkan penguasa setiap 25 petak.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JEDA -->
+  <div class="screen overlay hidden" id="screen-pause">
+    <div class="panel pause-panel">
+      <h2>JEDA</h2>
+      <button id="btn-resume" class="btn btn-primary">LANJUTKAN</button>
+      <button id="btn-pause-shop" class="btn">WARUNG</button>
+      <button id="btn-pause-retry" class="btn">ULANGI PETAK</button>
+      <button id="btn-pause-quit" class="btn btn-danger">KE MENU</button>
+    </div>
+  </div>
+
+  <!-- TOKO -->
+  <div class="screen overlay hidden" id="screen-shop">
+    <div class="panel shop-panel">
+      <header class="panel-head">
+        <div class="head-spacer"></div>
+        <h2>WARUNG BU MIRAH</h2>
+        <button class="icon-btn back-btn" id="btn-shop-close" aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-width="3" stroke="currentColor" fill="none"/></svg></button>
+      </header>
+      <div class="shop-coins"><img src="assets/img/coin.png" alt=""><b id="shop-coin-count">0</b></div>
+      <div id="shop-items"></div>
+    </div>
+  </div>
+
+  <!-- MENANG -->
+  <div class="screen overlay hidden" id="screen-victory">
+    <div class="panel victory-panel">
+      <h2 id="victory-title">PETAK SELESAI</h2>
+      <img id="victory-portal" src="assets/img/portal.png" alt="portal">
+      <div class="victory-stats">
+        <div><span>Koin diambil</span><b id="v-coin-run">0</b></div>
+        <div><span>Bonus petak</span><b id="v-coin-bonus">0</b></div>
+        <div><span>Total koin</span><b id="v-coin-total">0</b></div>
+      </div>
+      <button id="btn-next-level" class="btn btn-primary">PETAK BERIKUTNYA</button>
+      <div class="row-2">
+        <button id="btn-victory-retry" class="btn">ULANGI</button>
+        <button id="btn-victory-menu" class="btn">MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUGUR -->
+  <div class="screen overlay thin hidden" id="screen-death">
+    <div class="death-box">
+      <h2>KAMU GUGUR...</h2>
+      <p id="death-cause">Tersentuh makhluk halus</p>
+    </div>
+  </div>
+
+  <!-- INTRO BOSS -->
+  <div class="screen overlay thin hidden" id="screen-bossintro">
+    <div class="boss-intro">
+      <div class="boss-intro-top">PENGUASA PETAK</div>
+      <div class="boss-intro-name" id="boss-intro-name">RANGDA</div>
+      <div class="boss-intro-sub" id="boss-intro-sub">Ratu Para Leyak</div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <div id="rotate-hint" class="hidden"><div class="phone-rotate"></div><p>Putar layar ke mode mendatar</p></div>
+</div>
+<script src="assets/img/meta.js"></script>
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/save.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/input.js"></script>
+<script src="js/gen.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/world.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
